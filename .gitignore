@@ -4,3 +4,4 @@ config
 results/
 local_result/
 notebook/config.py
+model/training/config.py/*

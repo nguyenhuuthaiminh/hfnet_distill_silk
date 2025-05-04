@@ -21,9 +21,14 @@ In the first phase, I executed all the provided inference codes to validate the 
 
 ## 2. Reproducing HF-Net in Pytorch and Test the model
 
-In the second step, I reimplemented HF-Net in PyTorch and trained the model [HF-Net_SuperPoint](https://www.kaggle.com/code/moletet/hfnet-superpoint) using 1,000 images from the Google Landmarks dataset in 19 epoch. This step ensured the correctness of the implementation and evaluated the model's performance on a diverse and challenging dataset. 
+In the second step, I reimplemented HF-Net in PyTorch and trained the model [hfnet_superpoint](https://www.kaggle.com/code/moletet/hfnet-superpoint) using 1,000 images from the Google Landmarks dataset in 19 epoch. This step ensured the correctness of the implementation and evaluated the model's performance on a diverse and challenging dataset. 
 
 After that, I used the pre-trained model (hfnet-superpoint(SDS)) to test it with my evaluation module on the HPatches dataset. This allowed me to assess the model's performance and validate its effectiveness in a real-world evaluation scenario. And here are the outcomes I obtained:
+
+**Note**: My model can be easily trained locally. You only need to configure it to train with a GPU and prepare the data in the correct format for the three heads (local detector, local descriptor, and global descriptor). Add 4 paths (`IMAGE_DIR,GLOBAL_DIR,LOCAL_DIR,SAVE_DIR`) in [config.py](model/training/config.py) and run this line of code in terminal:
+```bash
+python -m model.hfnet_distill_silk
+```
 
 ### Configuration
 
@@ -60,7 +65,7 @@ As you can see, the results of the hfnet-superpoint (SDS) are likely to improve 
 
 ## 3. Exploring Multiple Approaches to Improve HF-Net Performance
 
-### Attempt 1
+### 1️⃣ Attempt 1
 
 In this attempt, I used `sparse_positions` and `sparse_descriptors`, which contain the positions and descriptors of each keypoint. I converted the `sparse_positions` into a `heatmap` to adapt it to the loss function of this model, which worked very well during the training process. Additionally, to address the difference of `sparse_descriptors` from SiLK and `local_descriptor_map` from HF_Net, I implemented a post-processing module to extract the output of HF-Net. This allowed me to align the keypoint positions and apply the MSE loss to this head effectively. However, when I evaluated the model on the HPatches dataset using the same configuration as above, I obtained the following result:
 
@@ -71,7 +76,7 @@ In this attempt, I used `sparse_positions` and `sparse_descriptors`, which conta
 
 As you can see, the results are not satisfactory enough to proceed to the next step.
 
-### Attempt 2 
+### 2️⃣ Attempt 2 
 
 In the second scenario, I tried another approach by using `raw_descriptors` (similar to `local_descriptor_map`) instead of `sparse_descriptors` from SiLK. The `raw_descriptors` have a shape of (128, H-18, W-18). 
 
@@ -84,7 +89,7 @@ To align the output of HF-Net with the teacher model's output, I upscaled the HF
 
 The low performance of `hfnet-silk (raw_descriptors SDS)` could be attributed to the misalignment between the teacher model's `raw_descriptors` and the HF-Net output.
 
-### Attempt 3
+### 3️⃣ Attempt 3
 
 In the most recent trial of distilling SiLK for HF-Net, I attempted to align SiLK's `raw_descriptors` to the same shape as the output of the `local_descriptor_map` from HF-Net (128, H/8, W/8). The results show a noticeable improvement compared to the first two attempts but are still not as good as expected.
 
@@ -96,5 +101,8 @@ In the most recent trial of distilling SiLK for HF-Net, I attempted to align SiL
 As you can see, some metrics (`Rep`and `mAp`) of the detector `hfnet-silk` are slightly better than those of `hfnet-superpoint`. Therefore, I would like to visualize some results when using it to detect keypoints on the HPatches dataset.
 
 ![HF-Net(SiLK)](images/hfnet-silk.png "HF-Net(SiLK) Keypoint Detection on HPatches")
-![HF-Net(SuperPoint)](images/hfnet-silk.png "HF-Net(SuperPoint) Keypoint Detection on HPatches")
+*Figure 1: Keypoint detection results using HF-Net distilled from SiLK.*
+![HF-Net(SuperPoint)](images/hfnet-superpoint.png "HF-Net(SuperPoint) Keypoint Detection on HPatches")
+*Figure 2: Keypoint detection results using HF-Net distilled from SuperPoint.*
 
+**Note**: In the same configuration, some result from `hfnet-silk` show really bad performance
