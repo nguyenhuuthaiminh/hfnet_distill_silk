@@ -105,4 +105,4 @@ As you can see, some metrics (`Rep`and `mAp`) of the detector `hfnet-silk` are s
 ![HF-Net(SuperPoint)](images/hfnet-superpoint.png "HF-Net(SuperPoint) Keypoint Detection on HPatches")
 *Figure 2: Keypoint detection results using HF-Net distilled from SuperPoint.*
 
-**Note**: In the same configuration, some result from `hfnet-silk` show really bad performance
+**Note**: Under the same configuration, some results from `hfnet-silk` exhibit significantly poor performance. However, if I tailor the configuration for `hfnet-silk` in this scenario, the performance might improve.

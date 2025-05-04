@@ -1,7 +1,14 @@
+# Ignore Python cache files
 __pycache__/
+
+# Ignore model weights
 weight/
+
+# Ignore configuration files
 config
-results/
-local_result/
 notebook/config.py
 model/training/config.py/*
+
+# Ignore results directories
+results/
+local_result/
