@@ -1,4 +1,4 @@
-# HFNet Distill Silk
+# HF-Net Distill Silk
 
 This project is a distilled version of [HF-Net](https://github.com/ethz-asl/hfnet), designed for lightweight deployment and efficient inference. Unlike the original, the teacher model used in this approach is [SiLK](https://github.com/facebookresearch/silk), replacing SuperPoint from the original paper.
 
